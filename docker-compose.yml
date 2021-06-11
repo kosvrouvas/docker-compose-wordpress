@@ -60,6 +60,11 @@ services:
     depends_on:
       - db
       - wordpress
+  mailcatcher:
+    image: chatwork/mailcatcher
+    ports:
+      - "1025:1025"
+      - "1080:1080"
 
 networks:
   wpsite:
