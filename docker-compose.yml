@@ -1,7 +1,8 @@
 version: '3'
 
 services:
-  # Database
+
+  # mariaDB
   db:
     image: mariadb
     volumes:
@@ -14,6 +15,7 @@ services:
       MYSQL_PASSWORD: wordpress
     networks:
       - wpsite
+
   # phpmyadmin
   phpmyadmin:
     depends_on:
@@ -27,7 +29,8 @@ services:
       MYSQL_ROOT_PASSWORD: password 
     networks:
       - wpsite
-  # Wordpress
+
+  # WordPress
   wordpress:
     depends_on:
       - db
@@ -43,6 +46,21 @@ services:
       WORDPRESS_DB_PASSWORD: wordpress
     networks:
       - wpsite
+  
+  wpcli:
+    image: wordpress:cli
+    volumes:
+      - ./config/php.conf.ini:/usr/local/etc/php/conf.d/conf.ini
+      - ./app:/var/www/html
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_NAME: "${DB_NAME}"
+      WORDPRESS_DB_USER: root
+      WORDPRESS_DB_PASSWORD: "${DB_ROOT_PASSWORD}"
+    depends_on:
+      - db
+      - wordpress
+
 networks:
   wpsite:
 volumes:
