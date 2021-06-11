@@ -1,4 +1,4 @@
-# WordPress in Docker
+# Dockerized WordPress
 
 This project includes:
 
