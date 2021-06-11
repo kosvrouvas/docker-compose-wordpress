@@ -39,7 +39,7 @@ services:
       - '8000:80'
     restart: always
     volumes:
-      - ./app:/var/www/html # Full wordpress project
+      - ./app:/var/www/html # The WordPress directory
     environment:
       WORDPRESS_DB_HOST: db:3306
       WORDPRESS_DB_USER: wordpress
