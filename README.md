@@ -1,4 +1,4 @@
-# Dockerized WordPress
+# WordPress with Docker Compose
 
 This project includes:
 
