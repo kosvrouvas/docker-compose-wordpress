@@ -2,6 +2,30 @@ version: "3.9"
     
 services:
   # mariaDB
+  netdata:
+    image: netdata/netdata
+    container_name: netdata
+    hostname: example.com # set to fqdn of host
+    ports:
+      - 19999:19999
+    restart: unless-stopped
+    cap_add:
+      - SYS_PTRACE
+    security_opt:
+      - apparmor:unconfined
+    volumes:
+      - netdataconfig:/etc/netdata
+      - netdatalib:/var/lib/netdata
+      - netdatacache:/var/cache/netdata
+      - /etc/passwd:/host/etc/passwd:ro
+      - /etc/group:/host/etc/group:ro
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /etc/os-release:/host/etc/os-release:ro
+    environment:
+      - NETDATA_CLAIM_TOKEN=-mOc_4WTXHiVEI35mAD_Y_542pvU88N7e3i14Jb5WgiP3aArDxBTb9Wd7Kg7kEYb80JvtPnWLNvByr6Rk61KQCVeGmIrqA6VwiGlWYDiQoNz2OyET2AmxKIF7i4CqtBDqtcxYtM
+      - NETDATA_CLAIM_URL=https://app.netdata.cloud
+      - NETDATA_CLAIM_ROOMS=399289e1-adfa-4233-a02e-e5b75044d1d4
   db:
     image: mariadb
     volumes:
@@ -48,6 +72,19 @@ services:
       WORDPRESS_CONFIG_EXTRA: >
           define( 'WP_REDIS_HOST', 'redis' );
           define( 'WP_CACHE_KEY_SALT', 'wp-docker-5DknvYepdjyJMo8gDqrLhrpAJUQ' );
+  wpcli:
+      image: wordpress:cli
+      volumes:
+      - wordpress_data:/var/www/html
+      - ./config:/etc/php5/apache2/conf.d/custom.php.ini
+      environment:
+        WORDPRESS_DB_HOST: db
+        WORDPRESS_DB_NAME: wordpress
+        WORDPRESS_DB_USER: wordpress
+        WORDPRESS_DB_PASSWORD: wordpress
+      depends_on:
+        - db
+        - wordpress
 
   mailcatcher:
     image: chatwork/mailcatcher
@@ -65,3 +102,6 @@ services:
 volumes:
   db_data: {}
   wordpress_data: {}
+  netdataconfig:
+  netdatalib:
+  netdatacache:
